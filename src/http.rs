@@ -25,7 +25,7 @@ impl Drop for Client {
             let mut file = File::create(&self.session_file)
                 .map_err(|e| anyhow!("failed to open `{}`: {}", self.session_file.display(), e))?;
 
-            for cookie in self
+            if let Some(cookie) = self
                 .cookie_store
                 .cookies(&self.endpoint.parse::<Url>().unwrap())
             {
@@ -36,7 +36,7 @@ impl Drop for Client {
         })();
 
         if let Err(err) = result {
-            let _ = eprintln!("An error occurred while saving the session: {}", err);
+            eprintln!("An error occurred while saving the session: {}", err);
         }
     }
 }

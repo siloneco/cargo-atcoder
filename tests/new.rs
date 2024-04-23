@@ -15,7 +15,7 @@ fn default() -> anyhow::Result<()> {
     assert_no_manifest(tempdir.path());
 
     assert_cmd::Command::cargo_bin("cargo-atcoder")?
-        .args(&["atcoder", "new", "abc126"])
+        .args(["atcoder", "new", "abc126"])
         .env("CARGO_ATCODER_TEST_CONFIG_DIR", tempdir.path())
         .env("CARGO_ATCODER_TEST_CACHE_DIR", tempdir.path())
         .current_dir(tempdir.path())
@@ -50,7 +50,7 @@ fn skip_warmup() -> anyhow::Result<()> {
     assert_no_manifest(tempdir.path());
 
     assert_cmd::Command::cargo_bin("cargo-atcoder")?
-        .args(&["atcoder", "new", "--skip-warmup", "abc126"])
+        .args(["atcoder", "new", "--skip-warmup", "abc126"])
         .env("CARGO_ATCODER_TEST_CONFIG_DIR", tempdir.path())
         .env("CARGO_ATCODER_TEST_CACHE_DIR", tempdir.path())
         .current_dir(tempdir.path())
@@ -85,7 +85,7 @@ fn bins() -> anyhow::Result<()> {
     assert_no_manifest(tempdir.path());
 
     assert_cmd::Command::cargo_bin("cargo-atcoder")?
-        .args(&[
+        .args([
             "atcoder", "new", "abc999", "--bins", "v", "w", "x", "y", "z",
         ])
         .env("CARGO_ATCODER_TEST_CONFIG_DIR", tempdir.path())

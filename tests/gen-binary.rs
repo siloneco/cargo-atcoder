@@ -107,7 +107,7 @@ fn assert_no_manifest(dir: &Path) {
 
 fn cargo_atcoder_new(dir: &Path) -> anyhow::Result<()> {
     assert_cmd::Command::cargo_bin("cargo-atcoder")?
-        .args(&[
+        .args([
             "atcoder",
             "new",
             "language-test-202001",

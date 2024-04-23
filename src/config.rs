@@ -66,5 +66,5 @@ pub fn read_config() -> Result<Config> {
 
 pub fn read_config_preserving() -> Result<Document> {
     let config_path = config_path()?;
-    Ok(fs::read_to_string(&config_path)?.parse::<Document>()?)
+    Ok(fs::read_to_string(config_path)?.parse::<Document>()?)
 }
