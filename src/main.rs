@@ -123,8 +123,16 @@ async fn new_project(opt: NewOpt) -> Result<()> {
     let toml_file = dir.join("Cargo.toml");
     let mut manifest = fs::read_to_string(&toml_file)?.parse::<toml_edit::DocumentMut>()?;
     let conf_preserved = read_config_preserving()?;
-    manifest["dependencies"] = conf_preserved["dependencies"].clone();
-    manifest["dev-dependencies"] = conf_preserved["dev-dependencies"].clone();
+    manifest["dependencies"] = if conf_preserved.contains_key("dependencies") {
+        conf_preserved["dependencies"].clone()
+    } else {
+        toml_edit::Item::None
+    };
+    manifest["dev-dependencies"] = if conf_preserved.contains_key("dev-dependencies") {
+        conf_preserved["dev-dependencies"].clone()
+    } else {
+        toml_edit::Item::None
+    };
     manifest["profile"] = toml_edit::Item::Table({
         let mut tbl = toml_edit::Table::new();
         tbl.set_implicit(true);
