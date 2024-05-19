@@ -37,7 +37,7 @@ fn no_upx(
     cargo_atcoder_new(tempdir.path())?;
 
     let config_path = tempdir.path().join("cargo-atcoder.toml");
-    let mut config = fs::read_to_string(&config_path)?.parse::<toml_edit::Document>()?;
+    let mut config = fs::read_to_string(&config_path)?.parse::<toml_edit::DocumentMut>()?;
     config["atcoder"]["use_cross"] = toml_edit::value(use_cross);
     fs::write(config_path, config.to_string())?;
 

@@ -18,7 +18,7 @@ use cargo_metadata::{Metadata, Package, Target};
 use chrono::{DateTime, Local};
 use console::Style;
 use futures::join;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
+use indicatif::{ProgressBar, ProgressStyle};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use sha2::digest::Digest;
@@ -121,7 +121,7 @@ async fn new_project(opt: NewOpt) -> Result<()> {
     }
 
     let toml_file = dir.join("Cargo.toml");
-    let mut manifest = fs::read_to_string(&toml_file)?.parse::<toml_edit::Document>()?;
+    let mut manifest = fs::read_to_string(&toml_file)?.parse::<toml_edit::DocumentMut>()?;
     let conf_preserved = read_config_preserving()?;
     manifest["dependencies"] = conf_preserved["dependencies"].clone();
     manifest["dev-dependencies"] = conf_preserved["dev-dependencies"].clone();
@@ -846,15 +846,12 @@ async fn watch_submission_status(
     let cur_time = chrono::offset::Utc::now();
 
     let contest_id = contest_id.to_owned();
-    let m = Arc::new(MultiProgress::new());
     let complete = Arc::new(AtomicBool::new(false));
 
     let join_fut = tokio::task::spawn_blocking({
-        let m = m.clone();
         let complete = Arc::clone(&complete);
         move || {
             while !complete.load(Ordering::Relaxed) {
-                m.join().unwrap();
                 std::thread::sleep(Duration::from_millis(50));
             }
         }
@@ -864,14 +861,18 @@ async fn watch_submission_status(
     let update_fut = tokio::task::spawn(async move {
         let mut dat = BTreeMap::new();
 
-        let spinner_style =
-            ProgressStyle::default_spinner().template("{prefix} {spinner:.cyan} {msg}");
+        let spinner_style = ProgressStyle::default_spinner()
+            .template("{prefix} {spinner:.cyan} {msg}")
+            .unwrap();
 
         let bar_style = ProgressStyle::default_bar()
             .template("{prefix} [{bar:30.cyan/blue}] {pos:>2}/{len:2} {msg}")
+            .unwrap()
             .progress_chars("=>.");
 
-        let finish_style = ProgressStyle::default_spinner().template("{prefix} {msg}");
+        let finish_style = ProgressStyle::default_spinner()
+            .template("{prefix} {msg}")
+            .unwrap();
 
         let green = Style::new().green();
         let red = Style::new().red();

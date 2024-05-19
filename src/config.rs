@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::path::PathBuf;
 use std::{env, fs};
 use toml::Value;
-use toml_edit::Document;
+use toml_edit::DocumentMut;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Config {
@@ -64,7 +64,7 @@ pub fn read_config() -> Result<Config> {
     })
 }
 
-pub fn read_config_preserving() -> Result<Document> {
+pub fn read_config_preserving() -> Result<DocumentMut> {
     let config_path = config_path()?;
-    Ok(fs::read_to_string(config_path)?.parse::<Document>()?)
+    Ok(fs::read_to_string(config_path)?.parse::<DocumentMut>()?)
 }
